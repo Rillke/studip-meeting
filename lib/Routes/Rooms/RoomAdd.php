@@ -80,7 +80,7 @@ class RoomAdd extends MeetingsController
             // Apply validation on features inputs
             try {
                 $validated_features = $this->validateFeatureInputs($json['features'], $json['driver']);
-                if (!$validated_features) {
+                if ($validated_features === false) {
                     $message = [
                         'text' => I18N::_('Raumeinstellung kann nicht bearbeitet werden!'),
                         'type' => 'error'
@@ -139,7 +139,7 @@ class RoomAdd extends MeetingsController
                     $error_text = I18N::_('Die ausgewählte Gruppe ist nicht mehr verfügbar');
                 }
             }
-            
+
             if (!$has_error) {
                 //putting mandatory logoutURL into features
                 $hostUrl = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost()
@@ -185,6 +185,7 @@ class RoomAdd extends MeetingsController
                     throw new Error($e->getMessage(), ($e->getCode() ? $e->getCode() : 404));
                 }
 
+                $meeting->features  = $meetingParameters->getMeetingFeatures();
                 $meeting->remote_id = $meetingParameters->getRemoteId();
                 $meeting->store();
 
